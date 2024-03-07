@@ -6,10 +6,18 @@
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    display: grid;
+    grid-template-areas:
+        "cabecera cabecera cabecera cabecera"
+        "audio canvas canvas c3D";
+    grid-template-rows: 30vh 70vh;
+    grid-template-columns: repeat(4, 1fr);
+
+    background-color: #3b4143 !important;
 }
 
 .cabecera {
+    grid-area: cabecera;
     width: 100%;
     height: 25vh;
     display: flex;
@@ -18,37 +26,32 @@ body {
     overflow: hidden;
 }
 
-/* .contenedorLogo {
+.contenedorLogo {
+    width: 220px;
+    height: 220px;
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+} 
+
+.containerBielas {
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-} */
-
-.containerBielas {
-    width: 220px;
-    height: 220px;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
     position: absolute;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .contenedorTexto {
-    width: 220px;
-    height: 220px;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1;
+    position: absolute;
 }
 
 .containerVideo {
@@ -112,8 +115,7 @@ body {
 }
 
 .containerAudio {
-    width: 25%;
-    height: 75vh;
+    grid-area: audio;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -179,8 +181,7 @@ h2 {
 }
 
 .containerCanvas {
-    width: 42vw;
-    height: 75vh;
+    grid-area: canvas;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -209,8 +210,7 @@ h2 {
 }
 
 .container3D {
-    width: 550px;
-    height: 720px;
+    grid-area: c3D;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -225,11 +225,17 @@ h2 {
     height: auto;
 }
 
-/* @media(max-width:1200px){
-    #contenedor3D{
-        display: inline-block;
+@media(max-width:1200px) {
+    body {
+        grid-template-areas:
+            "cabecera cabecera"
+            "audio canvas"
+            "c3D c3D";
+
+        grid-template-rows: 30vh 1fr 1fr;
+        grid-template-columns: repeat(2, 1fr);
     }
-}  */
+}
 
 @media (max-width: 1024px) {
     .titulo {
@@ -237,45 +243,31 @@ h2 {
         font-size: 80px;
     }
 
-     .containerBielas, .contenedorTexto {
-        width:175px;
-        height:175px;
-    } 
+    .contenedorLogo {
+        width: 100px;
+        height: 100px;
+    }
 }
 
 @media (max-width: 760px) {
     body {
-        overflow-x: hidden;
-        overflow-y: scroll;
+        grid-template-areas:
+            "cabecera"
+            "audio"
+            "canvas"
+            "c3D";
+
+        grid-template-rows: 30vh 1fr 1fr 1fr;
+        grid-template-columns: 1fr;
     }
 
     .titulo {
-        height: 25vh;
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
-        line-height: 1;
-    }
-
-    .contenedores {
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        height: auto;
-        gap: 30px;
+        line-height: 1;
+        font-size: 45px;
     }
-
-    .containerAudio,
-    .containerCanvas,
-    .container3D {
-        margin-top: 20px;
-        width: 100%;
-        height: 33%;
-    }
-
-    #lienzo {
-        width: 100%;
-        height: auto;
-    }
+    
 }

@@ -1,8 +1,8 @@
 /** Script del elemento Canva */
 window.onload = function iniciar() {
     var elemento = document.getElementById('lienzo');
-    var lienzo = elemento.getContext('2d',{willReadFrequently:true});
-    var imagenes=['./img/SantaCruzVerde.jpg','./img/pared.avif','./img/urban.webp','./img/container.webp'];
+    var lienzo = elemento.getContext('2d', { willReadFrequently: true });
+    var imagenes = ['./img/SantaCruzVerde.jpg', './img/pared.avif', './img/urban.webp', './img/container.webp'];
     var indiceImagenActual = 0;
 
     function cargarImagen(src) {
@@ -48,27 +48,37 @@ window.onload = function iniciar() {
         return info;
     }
 
-    function dibujarImagen(imagen) {
+    function dibujarImagen(imagen, filtro) {
         lienzo.clearRect(0, 0, elemento.width, elemento.height);
-        lienzo.drawImage(imagen, 0, 0, elemento.width, elemento.height);
-    }
     
-    function aplicarFiltroYDibujar(filtro) {
-        var info = lienzo.getImageData(0, 0, elemento.width, elemento.height);
+        // Aplicar el filtro a la imagen antes de dibujarla
+        var info = lienzo.getImageData(0, 0, imagen.width, imagen.height);
         info = aplicarFiltro(info, filtro);
         lienzo.putImageData(info, 0, 0);
+    
+        // Calcular la relación de aspecto de la imagen
+        var ratio = Math.min(elemento.width / imagen.width, elemento.height / imagen.height);
+    
+        // Calcular las nuevas dimensiones de la imagen
+        var newWidth = imagen.width * ratio;
+        var newHeight = imagen.height * ratio;
+    
+        // Calcular la posición para centrar la imagen en el lienzo
+        var x = (elemento.width - newWidth) / 2;
+        var y = (elemento.height - newHeight) / 2;
+    
+        // Configurar la calidad de suavizado de imagen
+        lienzo.imageSmoothingQuality = 'high';
+    
+        // Dibujar la imagen en el lienzo
+        lienzo.drawImage(imagen, x, y, newWidth, newHeight);
     }
     
     function siguienteImagen() {
         cargarImagen(imagenes[indiceImagenActual])
             .then(imagen => {
                 var filtros = ['negativo', 'bw', 'gris', 'sepia', ''];
-                dibujarImagen(imagen);
-    
-                // 2 segundos de espera antes de aplicar el filtro
-                setTimeout(() => {
-                    aplicarFiltroYDibujar(filtros[indiceImagenActual]);
-                }, 2000); 
+                dibujarImagen(imagen, filtros[indiceImagenActual]);
     
                 // Actualizar el boton que indica la imagen
                 var puntos = document.querySelectorAll('.punto');
@@ -83,6 +93,27 @@ window.onload = function iniciar() {
             })
             .catch(error => console.error(error));
     }
-    
+
+    function siguienteImagen() {
+        cargarImagen(imagenes[indiceImagenActual])
+            .then(imagen => {
+                var filtros = ['negativo', 'bw', 'gris', 'sepia', ''];
+                dibujarImagen(imagen, filtros[indiceImagenActual]);
+
+                // Actualizar el boton que indica la imagen
+                var puntos = document.querySelectorAll('.punto');
+                puntos.forEach((punto, index) => {
+                    punto.classList.remove('activo');
+                    if (index === indiceImagenActual) {
+                        punto.classList.add('activo');
+                    }
+                });
+
+                indiceImagenActual = (indiceImagenActual + 1) % imagenes.length;
+            })
+            .catch(error => console.error(error));
+    }
+
     setInterval(siguienteImagen, 6000);
-    siguienteImagen();}
+    siguienteImagen();
+}
